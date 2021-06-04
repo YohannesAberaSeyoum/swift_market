@@ -1,10 +1,11 @@
 class Product:
-    def __init__(self, obj, amount, time, market, person):
+    def __init__(self, obj, amount, time, market, person, borrowLend = "None"):
         self.Objects = obj
         self.Amount = amount
         self.Time = time
         self.Market = market
         self.Person = person
+        self.borrowLend = borrowLend
 
 
 def sellProduct():
@@ -26,17 +27,35 @@ def sellProduct():
     print("The product is sold")
 
 
-def buyProduct(buy=True):
+def buyProduct(role = "Buy"):
     oList = objectList()
-    name = objectInput(oList, True if buy else False)
+    name = objectInput(oList, True if role == "Buy" else False)
     amount = amountInput(name)
     pList = personList()
     person = personInput(pList)
     time = timeInput()
     product = Product(obj=name, amount=str(amount),
-                      time=time, market='Buy' if buy else 'Defect', person=person)
+                      time=time, market=role, person=person)
     saveProduct(product=product)
     print("The product is registered")
+
+def returnProduct():
+    print("Enter 1.If the product have no defect\nEnter 2.If the product have defect\nEnter 3.If the product is repaired/replace\nEnter 4.To return back")
+    while True:
+        command = input()
+        if command == "1":
+            buyProduct("No_Defect")
+            break
+        elif command == "2":
+            buyProduct("Defect")
+            break
+        elif command == "3":
+            buyProduct("Repaired/Replaced")
+            break
+        elif command == "4":
+            break
+        else:
+            print("Please Enter only listed number")
 
 
 def saveProduct(product):
@@ -291,11 +310,11 @@ def amountInput(obj):
 
 
 def objectInput(lst, buy=False, multi=False):
+    print("List of Products")
+    for i, l in enumerate(lst):
+        print("{}.{}".format(i+1, l))
     if list(lst):
         while True:
-            print("List of Products")
-            for i, l in enumerate(lst):
-                print("{}.{}".format(i+1, l))
             if buy:
                 print(
                     "Enter the number from above list to select\n or Enter 0 to add new: ")
@@ -338,11 +357,11 @@ def inputCheck(option):
 
 
 def personInput(lst, info=False, multi=False):
+    print("List of Persons")
+    for i, l in enumerate(lst):
+        print("{}.{}".format(i+1, l))
     if list(lst):
         while True:
-            print("List of Persons")
-            for i, l in enumerate(lst):
-                print("{}.{}".format(i+1, l))
             if not (info or multi):
                 print(
                     "Enter the number from above list to select\n or Enter 0 to add new: ")
@@ -390,19 +409,18 @@ if __name__ == "__main__":
     else:
         if os.path.getsize("new_swift_market.csv") < 20:
             writeCSV()
-
+    print("Enter 1.To sell product\nEnter 2.To buy product\nEnter 3.To return product\nEnter 4.To borrow from other user\nEnter 5.For Statistic\nEnter 6.To Exit")
     while True:
         df = dataFrame()
-        command = input(
-            "Enter 1.To sell product\nEnter 2.To buy product\nEnter 3.To return product\nEnter 4.To borrow from other user\nEnter 5.For Statistic\nEnter 6.To Exit\n")
+        command = input()
         if command == "1":
             sellProduct()
         elif command == "2":
             buyProduct()
         elif command == "3":
-            buyProduct(False)
-        elif command == "4":
             returnProduct()
+        elif command == "4":
+            borrowProduct()
         elif command == "5":
             showStatistic()
         elif command == "6":
